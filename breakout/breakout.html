@@ -52,43 +52,11 @@
     {
         this.add.image(400, 300, 'sky');
 
-        platforms = this.physics.add.staticGroup();
-
-        // platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-        // platforms.create(600, 400, 'ground');
-        // platforms.create(50, 250, 'ground');
-        // platforms.create(750, 220, 'ground');
-
         player = this.physics.add.sprite(100, 550, 'ground').setScale(0.25);
 
-        player.setBounceY(1);
         player.setCollideWorldBounds(true);
+        player.setImmovable(true);
         cursors = this.input.keyboard.createCursorKeys();
-
-        // this.anims.create({
-        //     key: 'left',
-        //     frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-        //     frameRate: 10,
-        //     repeat: -1
-        // });
-
-        // this.anims.create({
-        //     key: 'turn',
-        //     frames: [ { key: 'dude', frame: 4 } ],
-        //     frameRate: 20
-        // });
-
-        // this.anims.create({
-        //     key: 'right',
-        //     frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-        //     frameRate: 10,
-        //     repeat: -1
-        // });
-
-
-        // star = this.physics.add.sprite(10, 10, "star")
-        // this.star.body.setVelocityX(100)
 
         stars = this.physics.add.group({
             key: 'star',
@@ -104,11 +72,7 @@
             child.setCollideWorldBounds(true);
         });
 
-        // this.physics.add.collider(player, platforms);
-        // this.physics.add.collider(stars, platforms);
         this.physics.add.collider(player, stars);
-
-        // this.physics.add.overlap(player, stars, collectStar, null, this);
     }
 
     function update ()
@@ -116,31 +80,15 @@
         if (cursors.left.isDown)
         {
             player.setVelocityX(-320);
-
-            // player.anims.play('left', true);
         }
         else if (cursors.right.isDown)
         {
             player.setVelocityX(320);
-
-            // player.anims.play('right', true);
         }
         else
         {
             player.setVelocityX(0);
-
-            // player.anims.play('turn');
         }
-
-        // if (cursors.up.isDown && player.body.touching.down)
-        // {
-        //     player.setVelocityY(-330);
-        // }
-    }
-
-    function collectStar (player, star)
-    {
-        star.disableBody(true, true);
     }
 
 </script>
