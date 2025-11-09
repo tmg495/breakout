@@ -36,6 +36,9 @@
     var stars;
     var platforms;
     var cursors;
+    var gameOver = false;
+    var lives = 5;
+    var ballSpeed = 600;
 
     var game = new Phaser.Game(config);
 
@@ -46,37 +49,69 @@
         this.load.image('star', 'assets/star.png');
         this.load.image('bomb', 'assets/bomb.png');
         this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    
+        // var graphics = this.add.graphics();
+        // graphics.fillCircle(10, 10, 10);
+        // graphics.generateTexture("ball");
+        // graphics.destroy();
     }
 
     function create ()
     {
-        this.add.image(400, 300, 'sky');
+        background = this.add.image(400, 300, 'sky');
 
-        player = this.physics.add.sprite(100, 550, 'ground').setScale(0.25);
+        // bricks = this.physics.add.group({
+        //     key: 'ground',
+        //     repeat: 11,
+        //     setXY: { x: 12, y: 0, stepX: 70 }
+        // });
+
+        // stars.children.iterate(function (child) {
+
+        //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
+        // });
+        bricks = this.physics.add.staticGroup({
+            key: 'ground',
+            repeat: 15,
+            setXY: {x: 50, y: 20, stepX: 45}
+        });
+        bricks.children.iterate(function (child){
+            child.setScale(0.1);
+        })
+        // bricks.create(200, 20, 'ground').setScale(0.2);
+        
+        ground = this.physics.add.staticGroup();
+        ground.create(400, 620, 'ground').setScale(2).refreshBody();
+
+        ball = this.physics.add.sprite(400, 600, 'bomb');
+        ball.setVelocity(ballSpeed, -ballSpeed);
+        ball.setBounce(1);
+        // ball.setBounceY(1);
+        ball.setCollideWorldBounds(true);
+
+        player = this.physics.add.sprite(100, 550, 'ground').setScale(0.25).setTint('#0ff000');
 
         player.setCollideWorldBounds(true);
         player.setImmovable(true);
         cursors = this.input.keyboard.createCursorKeys();
 
-        stars = this.physics.add.group({
-            key: 'star',
-            repeat: 0,
-            setXY: { x: 12, y: 0, stepX: 70 }
-        });
+        livesCounter = this.add.text(16, 555, `lives: ${lives}`, { fontSize: '16px', fill: '#000' });
 
-        stars.children.iterate(function (child) {
-            child.setVelocityX(150);
-            child.setVelocityY(150);
-            child.setBounceX(1);
-            child.setBounceY(1);
-            child.setCollideWorldBounds(true);
-        });
 
         this.physics.add.collider(player, stars);
+        this.physics.add.collider(player, ball);
+        this.physics.add.collider(ball, bricks, hitBrick, null, this);
+        
+        this.physics.add.collider(ball, ground, loseLife, null, this);
     }
 
     function update ()
     {
+        // if (gameOver)
+        // {
+        //     return;
+        // }
         if (cursors.left.isDown)
         {
             player.setVelocityX(-320);
@@ -89,6 +124,19 @@
         {
             player.setVelocityX(0);
         }
+    }
+    const loseLife = function() {
+        if (lives == 0) {
+            this.physics.pause();
+            background.setTint(0xff0000);
+        }
+        lives--;
+        livesCounter.setText('lives: ' + lives);
+
+    }
+    const hitBrick = function() {
+        //still working on this
+        // brick.disableBody(true, true);
     }
 
 </script>
